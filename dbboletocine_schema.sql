@@ -1,0 +1,92 @@
+
+/* Gestionar la base de datos */
+-- Borrar base de datos
+DROP DATABASE IF EXISTS CINE;
+
+-- Crear base de datos
+CREATE DATABASE CINE
+DEFAULT CHARACTER SET utf8;
+
+-- Poner en uso la base de datos
+USE CINE;
+
+-- Ver cual es la base de datos en uso
+SELECT DATABASE();
+
+/* Crear tablas */
+
+-- Crear tabla CLIENTE
+CREATE TABLE CLIENTE (
+    CODCLI char(4),
+    NOMCLI varchar(20),
+    DNICLI char(8),
+    CELCLI char(9),
+    CONSTRAINT CLIENTE_PK PRIMARY KEY (CODCLI)
+);
+
+-- Crear tabla PELICULA
+CREATE TABLE PELICULA (
+    CODPEL char(4),
+    NOMPEL varchar(50),
+    COSPEL char(10),
+    TIMPEL char(10),
+    FECPEL timestamp,
+    GENPEL varchar(20),
+    CLASPEL varchar(20),
+    IDIPEL varchar(20),
+    CONSTRAINT PELICULA_PK PRIMARY KEY (CODPEL)
+);
+
+-- Crear tabla VENDEDOR
+CREATE TABLE VENDEDOR (
+    CODVEN char(4),
+    NOMVEN varchar(15),
+    APEVEN varchar(15),
+    PASVEN varchar(10),
+    NUMVEN char(10),
+    DIRVEN varchar(15),
+    CONSTRAINT VENDEDOR_PK PRIMARY KEY (CODVEN)
+);
+
+-- Crear tabla VENTAS
+CREATE TABLE VENTAS (
+    CODVENT char(4),
+    CODVEN  char(4),
+    FECVENT timestamp,
+    CONSTRAINT VENTAS_PK PRIMARY KEY (CODVENT)
+);
+
+-- Crear tabla VENTADETALLE
+CREATE TABLE VENTADETALLE (
+    CODDET char(4),
+    CANTDET int,
+    AUDDET char(4),
+    CODVENT char(4),
+    CODPEL  char(4),
+    CONSTRAINT VENTADETALLE_PK PRIMARY KEY (CODDET)
+);
+
+SHOW TABLES;
+
+/* Crear las relaciones */
+
+-- Relacionar la tabla VENDEDOR - VENTAS
+ALTER TABLE VENTAS
+ADD CONSTRAINT VENDEDOR_VENTAS_CODVEN
+FOREIGN KEY (CODVEN) REFERENCES VENDEDOR (CODVEN);
+
+-- Relacionar la tabla PELICULA - VENTADETALLE
+ALTER TABLE VENTADETALLE
+ADD CONSTRAINT PELICULA_VENTADETALLE_CODPEL
+FOREIGN KEY (CODPEL) REFERENCES PELICULA (CODPEL);
+
+-- Relacionar la tabla VENTAS - VENTA_DETALLE
+ALTER TABLE VENTADETALLE 
+ADD CONSTRAINT VENTAS_VENTA_DETALLE_CODVENT 
+FOREIGN KEY (CODVENT) REFERENCES VENTAS (CODVENT);
+
+-- Listar las relaciones entre tablas
+SELECT * 
+FROM INFORMATION_SCHEMA.TABLE_CONSTRAINTS 
+WHERE table_schema="CINE" 
+    AND constraint_type="FOREIGN KEY";
